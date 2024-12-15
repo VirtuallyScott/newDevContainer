@@ -30,8 +30,7 @@ RUN echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 USER vscode
 
 # Install Homebrew
-#RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+RUN wget -qO- https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | bash
 
 # Set Homebrew environment variables
 ENV PATH="/home/vscode/.linuxbrew/bin:/home/vscode/.linuxbrew/sbin:${PATH}"
