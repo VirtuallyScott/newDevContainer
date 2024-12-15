@@ -1,12 +1,18 @@
 # Use the official Ubuntu base image
 FROM ubuntu:latest
 
+# Set the default user
+ENV USER_NAME=vscode
+ENV UID=1001
+ENV GID=1001
+ENV GROUP_NAME=4{USER_NAME}
+
 # Set environment variables for non-interactive apt-get
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Update and upgrade the system
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install jq yq ca-certificates curl python3-pip wget build-essential zip unzip file git sudo -y
+RUN apt-get install jq yq ca-certificates curl python3-pip wget build-essential zip unzip file git sudo software-properties-common gnupg -y
 
 # Copy the Zscaler certificate into the container
 #COPY path/to/local/zscaler.crt /usr/local/share/ca-certificates/zscaler.crt
@@ -21,16 +27,15 @@ RUN update-ca-certificates
 #RUN echo "cacert=/usr/local/share/ca-certificates/zscaler.crt" >> /etc/curlrc
 
 # Create a group with GID 1001 and a new user 'vscode' with UID 1001, add to sudo group
-RUN groupadd -g 1001 vscode && useradd -m -u 1001 -g 1001 -G sudo vscode
-
-# Allow passwordless sudo for the vscode user
-RUN echo "vscode ALL=(ALL) NOPASSWD:ALL" | tee /etc/sudoers.d/vscode
+RUN groupadd -g ${GID} ${GROUP_NAME} && \
+    useradd -u ${UID} -g ${GROUP_NAME} -m -s /bin/bash ${USER_NAME} && \
+    echo "${USER_NAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # Switch to the vscode user
 USER vscode
 
 # Install Homebrew
-#RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # Set Homebrew environment variables
 #ENV PATH="/home/vscode/.linuxbrew/bin:/home/vscode/.linuxbrew/sbin:${PATH}"
