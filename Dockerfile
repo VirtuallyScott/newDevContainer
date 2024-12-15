@@ -24,7 +24,7 @@ RUN update-ca-certificates
 RUN groupadd -g 1001 vscode && useradd -m -u 1001 -g 1001 -G sudo vscode
 
 # Allow passwordless sudo for the vscode user
-RUN echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
+RUN echo "vscode ALL=(ALL) NOPASSWD:ALL" | tee /etc/sudoers.d/vscode
 
 # Switch to the vscode user
 USER vscode
