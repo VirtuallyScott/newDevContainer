@@ -20,8 +20,8 @@ RUN update-ca-certificates
 # Configure curl to use the certificate
 #RUN echo "cacert=/usr/local/share/ca-certificates/zscaler.crt" >> /etc/curlrc
 
-# Create a new user 'vscode' with UID and GID 1001 and add to sudo group
-RUN useradd -m -u 1001 -g 1001 -G sudo vscode
+# Create a group with GID 1001 and a new user 'vscode' with UID 1001, add to sudo group
+RUN groupadd -g 1001 vscode && useradd -m -u 1001 -g 1001 -G sudo vscode
 
 # Allow passwordless sudo for the vscode user
 RUN echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
