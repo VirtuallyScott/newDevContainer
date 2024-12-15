@@ -20,10 +20,11 @@ RUN update-ca-certificates
 # Configure curl to use the certificate
 #RUN echo "cacert=/usr/local/share/ca-certificates/zscaler.crt" >> /etc/curlrc
 
-# Create a new user 'vscode' with UID and GID 1001
-RUN useradd -m -u 1001 -g 1001 vscode
+# Create a new user 'vscode' with UID and GID 1001 and add to sudo group
+RUN useradd -m -u 1001 -g 1001 -G sudo vscode
 
-# Install dependencies for Homebrew
+# Allow passwordless sudo for the vscode user
+RUN echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 RUN apt-get install -y build-essential curl file git
 
 # Switch to the vscode user
