@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Update and upgrade the system
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install jq yq ca-certificates curl python3-pip wget -y
+RUN apt-get install jq yq ca-certificates curl python3-pip wget build-essential zip unzip file git sudo -y
 
 # Copy the Zscaler certificate into the container
 #COPY path/to/local/zscaler.crt /usr/local/share/ca-certificates/zscaler.crt
@@ -25,7 +25,6 @@ RUN useradd -m -u 1001 -g 1001 -G sudo vscode
 
 # Allow passwordless sudo for the vscode user
 RUN echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-RUN apt-get install -y build-essential curl file git
 
 # Switch to the vscode user
 USER vscode
