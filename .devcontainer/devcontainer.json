@@ -1,0 +1,16 @@
+{
+    "name": "Ubuntu Dev Container",
+    "build": {
+        "dockerfile": "../Dockerfile",
+        "context": ".."
+    },
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
+    "extensions": [
+        "ms-python.python",
+        "ms-vscode.cpptools"
+    ],
+    "postCreateCommand": "echo 'VSCode configured with Zscaler certificate'",
+    "remoteUser": "vscode"
+}
