@@ -12,7 +12,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Update and upgrade the system
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install jq yq ca-certificates curl python3-pip wget build-essential zip unzip file git sudo software-properties-common gnupg -y
+RUN apt-get install ca-certificates curl wget build-essential git sudo -y
 
 # Copy the Zscaler certificate into the container
 #COPY path/to/local/zscaler.crt /usr/local/share/ca-certificates/zscaler.crt
@@ -38,4 +38,9 @@ USER vscode
 RUN /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # Set Homebrew environment variables
-#ENV PATH="/home/vscode/.linuxbrew/bin:/home/vscode/.linuxbrew/sbin:${PATH}"
+RUN echo >> /home/vscode/.bashrc && \
+    echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /home/vscode/.bashrc && \
+    eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv) && \
+    . ~/.bashrc && \
+    brew install jq yq checkov trivy terragrunt opentofu tflint gitversion git-flow git-lfs && \
+    echo "alias tf='tofu'" >> ~/.bashrc
