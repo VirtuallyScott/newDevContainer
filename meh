@@ -1,0 +1,43 @@
+# Base image with Ubuntu and VSCode user setup
+FROM ubuntu:22.04
+
+# Define user and home directory
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+ENV HOME=/home/$USERNAME
+
+# Install dependencies and create non-root user
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        curl \
+        file \
+        git \
+        sudo \
+        ca-certificates && \
+    groupadd --gid $USER_GID $USERNAME && \
+    useradd --uid $USER_UID --gid $USER_GID -m $USERNAME && \
+    echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/$USERNAME && \
+    chmod 0440 /etc/sudoers.d/$USERNAME
+
+# Install Linuxbrew (Homebrew for Linux)
+USER $USERNAME
+WORKDIR $HOME
+
+RUN git clone https://github.com/Homebrew/brew $HOME/.linuxbrew/Homebrew && \
+    mkdir $HOME/.linuxbrew/bin && \
+    ln -s $HOME/.linuxbrew/Homebrew/bin/brew $HOME/.linuxbrew/bin/brew && \
+    echo 'eval "$($HOME/.linuxbrew/bin/brew shellenv)"' >> $HOME/.profile && \
+    eval "$($HOME/.linuxbrew/bin/brew shellenv)" && \
+    brew update --force --quiet
+
+# Install desired brew packages
+RUN eval "$($HOME/.linuxbrew/bin/brew shellenv)" && \
+    brew install jq yq tflint
+
+# Add Homebrew to PATH in the container
+ENV PATH="$HOME/.linuxbrew/bin:$HOME/.linuxbrew/sbin:$PATH"
+
+# Default to bash
+CMD [ "bash" ]
